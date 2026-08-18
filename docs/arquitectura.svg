@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Segoe UI, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="#0f0f0f" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="700">Arquitectura — CRM Clientes</text>
+  <text x="450" y="60" text-anchor="middle" fill="#888" font-size="12">React 18 + Spring Boot 3 + MySQL</text>
+
+  <!-- ─── LAYER LABELS ─── -->
+  <text x="100" y="100" text-anchor="middle" fill="#f97316" font-size="11" font-weight="600" letter-spacing="1">CLIENTE</text>
+  <text x="450" y="100" text-anchor="middle" fill="#f97316" font-size="11" font-weight="600" letter-spacing="1">SERVIDOR</text>
+  <text x="780" y="100" text-anchor="middle" fill="#f97316" font-size="11" font-weight="600" letter-spacing="1">PERSISTENCIA</text>
+
+  <!-- Vertical dividers -->
+  <line x1="250" y1="80" x2="250" y2="590" stroke="#333" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="640" y1="80" x2="640" y2="590" stroke="#333" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ─── FRONTEND BOX ─── -->
+  <rect x="20" y="115" width="210" height="420" fill="#1a1a1a" stroke="#f97316" stroke-width="1.5" rx="8"/>
+  <text x="125" y="140" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">React 18 + Vite 5</text>
+
+  <!-- Frontend components -->
+  <rect x="35" y="155" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="175" text-anchor="middle" fill="#e2e8f0" font-size="11">Login.tsx</text>
+
+  <rect x="35" y="195" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="215" text-anchor="middle" fill="#e2e8f0" font-size="11">Layout.tsx (Sidebar)</text>
+
+  <rect x="35" y="235" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="255" text-anchor="middle" fill="#e2e8f0" font-size="11">Contacts.tsx</text>
+
+  <rect x="35" y="275" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="295" text-anchor="middle" fill="#e2e8f0" font-size="11">Companies.tsx</text>
+
+  <rect x="35" y="315" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="335" text-anchor="middle" fill="#e2e8f0" font-size="11">Deals.tsx (Kanban)</text>
+
+  <rect x="35" y="355" width="180" height="30" fill="#222" rx="5"/>
+  <text x="125" y="375" text-anchor="middle" fill="#e2e8f0" font-size="11">Tasks.tsx</text>
+
+  <!-- Auth context -->
+  <rect x="35" y="400" width="180" height="30" fill="#1e293b" stroke="#3b82f6" stroke-width="1" rx="5"/>
+  <text x="125" y="420" text-anchor="middle" fill="#93c5fd" font-size="11">AuthContext + JWT store</text>
+
+  <!-- Axios client -->
+  <rect x="35" y="440" width="180" height="30" fill="#1e293b" stroke="#3b82f6" stroke-width="1" rx="5"/>
+  <text x="125" y="460" text-anchor="middle" fill="#93c5fd" font-size="11">Axios client (api/)</text>
+
+  <!-- TypeScript badge -->
+  <rect x="35" y="485" width="85" height="22" fill="#2563eb" rx="4"/>
+  <text x="77" y="500" text-anchor="middle" fill="#fff" font-size="10" font-weight="600">TypeScript</text>
+
+  <rect x="130" y="485" width="85" height="22" fill="#7c3aed" rx="4"/>
+  <text x="172" y="500" text-anchor="middle" fill="#fff" font-size="10" font-weight="600">React Router v6</text>
+
+  <!-- ─── BACKEND BOX ─── -->
+  <rect x="270" y="115" width="350" height="420" fill="#1a1a1a" stroke="#22c55e" stroke-width="1.5" rx="8"/>
+  <text x="445" y="140" text-anchor="middle" fill="#22c55e" font-size="12" font-weight="600">Spring Boot 3.3 — Java 17</text>
+
+  <!-- Security layer -->
+  <rect x="285" y="155" width="320" height="70" fill="#14291e" stroke="#22c55e" stroke-width="1" rx="6"/>
+  <text x="445" y="175" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="600">Spring Security 6 (Stateless)</text>
+  <text x="360" y="200" text-anchor="middle" fill="#86efac" font-size="10">JwtAuthFilter</text>
+  <text x="445" y="200" text-anchor="middle" fill="#555" font-size="10">|</text>
+  <text x="530" y="200" text-anchor="middle" fill="#86efac" font-size="10">JwtTokenProvider</text>
+  <text x="445" y="215" text-anchor="middle" fill="#86efac" font-size="10">BCrypt(12) · CORS · HTTP headers</text>
+
+  <!-- Controllers -->
+  <rect x="285" y="240" width="320" height="55" fill="#1f2937" rx="6"/>
+  <text x="445" y="258" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600">Controllers (@RestController)</text>
+  <text x="445" y="280" text-anchor="middle" fill="#fde68a" font-size="10">Auth · Contact · Company · Deal · Task</text>
+
+  <!-- Services -->
+  <rect x="285" y="308" width="320" height="55" fill="#1f2937" rx="6"/>
+  <text x="445" y="326" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600">Services (@Service)</text>
+  <text x="445" y="348" text-anchor="middle" fill="#fde68a" font-size="10">Auth · Contact · Company · Deal · Task</text>
+
+  <!-- Repositories -->
+  <rect x="285" y="376" width="320" height="55" fill="#1f2937" rx="6"/>
+  <text x="445" y="394" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600">Repositories (JpaRepository)</text>
+  <text x="445" y="416" text-anchor="middle" fill="#fde68a" font-size="10">User · Contact · Company · Deal · Task</text>
+
+  <!-- Entities -->
+  <rect x="285" y="444" width="320" height="55" fill="#1f2937" rx="6"/>
+  <text x="445" y="462" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600">Entities (@Entity + Lombok)</text>
+  <text x="445" y="484" text-anchor="middle" fill="#fde68a" font-size="10">User · Contact · Company · Deal · Task</text>
+
+  <!-- Maven badge -->
+  <rect x="285" y="508" width="75" height="20" fill="#dc2626" rx="4"/>
+  <text x="322" y="522" text-anchor="middle" fill="#fff" font-size="10" font-weight="600">Maven</text>
+
+  <rect x="370" y="508" width="115" height="20" fill="#854d0e" rx="4"/>
+  <text x="427" y="522" text-anchor="middle" fill="#fef08a" font-size="10" font-weight="600">Hibernate / JPA</text>
+
+  <rect x="495" y="508" width="110" height="20" fill="#1e3a5f" rx="4"/>
+  <text x="550" y="522" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="600">JWT (jjwt 0.12)</text>
+
+  <!-- ─── DATABASE BOX ─── -->
+  <rect x="660" y="115" width="220" height="200" fill="#1a1a1a" stroke="#a855f7" stroke-width="1.5" rx="8"/>
+  <text x="770" y="140" text-anchor="middle" fill="#a855f7" font-size="12" font-weight="600">MySQL 8</text>
+  <text x="770" y="158" text-anchor="middle" fill="#888" font-size="10">cec_crm · cec_admin</text>
+
+  <rect x="675" y="168" width="190" height="24" fill="#2e1065" rx="4"/>
+  <text x="770" y="185" text-anchor="middle" fill="#d8b4fe" font-size="11">users</text>
+
+  <rect x="675" y="200" width="190" height="24" fill="#2e1065" rx="4"/>
+  <text x="770" y="217" text-anchor="middle" fill="#d8b4fe" font-size="11">contacts</text>
+
+  <rect x="675" y="232" width="190" height="24" fill="#2e1065" rx="4"/>
+  <text x="770" y="249" text-anchor="middle" fill="#d8b4fe" font-size="11">companies</text>
+
+  <rect x="675" y="264" width="190" height="24" fill="#2e1065" rx="4"/>
+  <text x="770" y="281" text-anchor="middle" fill="#d8b4fe" font-size="11">deals</text>
+
+  <rect x="675" y="296" width="190" height="24" fill="#2e1065" rx="4"/>
+  <text x="770" y="313" text-anchor="middle" fill="#d8b4fe" font-size="11">tasks</text>
+
+  <!-- ─── ARROWS ─── -->
+  <!-- Frontend → Backend (HTTP/REST) -->
+  <line x1="230" y1="320" x2="268" y2="320" stroke="#f97316" stroke-width="2" marker-end="url(#arrow-orange)"/>
+  <text x="249" y="313" text-anchor="middle" fill="#f97316" font-size="9">REST</text>
+  <text x="249" y="333" text-anchor="middle" fill="#888" font-size="9">JSON/HTTPS</text>
+
+  <!-- Backend → DB -->
+  <line x1="622" y1="290" x2="658" y2="260" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="647" y="280" text-anchor="middle" fill="#22c55e" font-size="9">JDBC</text>
+
+  <!-- JWT flow label -->
+  <text x="125" y="545" text-anchor="middle" fill="#888" font-size="10">Bearer Token → Authorization header</text>
+  <text x="445" y="550" text-anchor="middle" fill="#888" font-size="10">ddl-auto: update · serverTimezone: America/Mexico_City</text>
+
+  <!-- ─── ARROWHEAD MARKERS ─── -->
+  <defs>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/>
+    </marker>
+  </defs>
+
+  <!-- Port labels -->
+  <text x="125" y="570" text-anchor="middle" fill="#555" font-size="10">:5173 (dev) / :3030 (preview)</text>
+  <text x="445" y="570" text-anchor="middle" fill="#555" font-size="10">:8080</text>
+  <text x="770" y="335" text-anchor="middle" fill="#555" font-size="10">:3306</text>
+
+</svg>

@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cec_crm?useSSL=false&serverTimezone=America/Mexico_City&allowPublicKeyRetrieval=true
+    username: cec_admin
+    password: ceC2026@crm
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update            # local dev: sincroniza entidades automáticamente
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-message: never        # no exponer mensajes de error internos
+
+app:
+  jwt:
+    secret: "cec-crm-jwt-secret-key-cambiar-en-produccion-minimo-256bits-xXxXxX"
+    expiration-ms: 28800000       # 8 horas
+  cors:
+    allowed-origins: "http://localhost:5173,http://localhost:3030,https://tudominio.com"
+  rate-limit:
+    login-max-attempts: 5
+    login-window-minutes: 15
+
+logging:
+  level:
+    mx.cec.crm: INFO
+    org.springframework.security: WARN

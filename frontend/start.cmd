@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando CRM Frontend...
+npm run dev
