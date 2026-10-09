@@ -36,10 +36,10 @@ public class CompanyService {
         Company c = companyRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa", id));
         c.setName(req.name());
-        if (req.industry() != null) c.setIndustry(req.industry());
-        if (req.website()  != null) c.setWebsite(req.website());
-        if (req.phone()    != null) c.setPhone(req.phone());
-        if (req.notes()    != null) c.setNotes(req.notes());
+        c.setIndustry(req.industry());
+        c.setWebsite(req.website());
+        c.setPhone(req.phone());
+        c.setNotes(req.notes());
         return companyRepository.save(c);
     }
 

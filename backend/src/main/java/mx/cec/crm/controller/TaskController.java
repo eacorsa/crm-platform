@@ -3,6 +3,7 @@ package mx.cec.crm.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.cec.crm.dto.TaskRequest;
+import mx.cec.crm.dto.TaskDoneRequest;
 import mx.cec.crm.entity.Task;
 import mx.cec.crm.service.TaskService;
 import org.springframework.http.*;
@@ -35,6 +36,13 @@ public class TaskController {
                        @Valid @RequestBody TaskRequest req,
                        @AuthenticationPrincipal UserDetails principal) {
         return taskService.update(id, req, userId(principal));
+    }
+
+    @PatchMapping("/{id}/done")
+    public Task updateDone(@PathVariable Long id,
+                         @Valid @RequestBody TaskDoneRequest req,
+                         @AuthenticationPrincipal UserDetails principal) {
+        return taskService.updateDone(id, req.done(), userId(principal));
     }
 
     @DeleteMapping("/{id}")

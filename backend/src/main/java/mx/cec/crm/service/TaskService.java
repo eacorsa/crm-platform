@@ -41,14 +41,22 @@ public class TaskService {
     public Task update(Long id, TaskRequest req, Long userId) {
         Task t = taskRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tarea", id));
-        if (req.title()       != null) t.setTitle(req.title());
+        t.setTitle(req.title());
         if (req.type()        != null) t.setType(req.type());
         if (req.priority()    != null) t.setPriority(req.priority());
-        if (req.contactName() != null) t.setContactName(req.contactName());
-        if (req.dueDate()     != null) t.setDueDate(req.dueDate());
-        if (req.notes()       != null) t.setNotes(req.notes());
+        t.setContactName(req.contactName());
+        t.setDueDate(req.dueDate());
+        t.setNotes(req.notes());
         if (req.done()        != null) t.setDone(req.done());
         return taskRepository.save(t);
+    }
+
+    @Transactional
+    public Task updateDone(Long id, boolean done, Long userId) {
+        Task entity = taskRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tarea", id));
+        entity.setDone(done);
+        return taskRepository.save(entity);
     }
 
     @Transactional

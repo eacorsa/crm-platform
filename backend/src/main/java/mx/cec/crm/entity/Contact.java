@@ -37,6 +37,7 @@ public class Contact {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Stage stage = Stage.LEAD;
 
     @Column(length = 60)

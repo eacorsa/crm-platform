@@ -29,10 +29,12 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Type type = Type.LLAMADA;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Priority priority = Priority.NORMAL;
 
     @Column(name = "contact_name", length = 100)
@@ -45,6 +47,7 @@ public class Task {
     private String notes;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean done = false;
 
     @Column(name = "created_at", updatable = false)

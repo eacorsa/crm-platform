@@ -24,9 +24,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Role role = Role.AGENT;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean active = true;
 
     @Column(name = "created_at", updatable = false)

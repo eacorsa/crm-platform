@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Modal from '../components/Modal'
 import Toast from '../components/Toast'
 import { getCompanies, createCompany, updateCompany, deleteCompany } from '../api/companies'
+import { optionalText } from '../api/forms'
 import type { Company } from '../types'
 
 const EMPTY = { name: '', industry: '', website: '', phone: '', notes: '' }
@@ -49,11 +50,12 @@ export default function Companies() {
     e.preventDefault()
     setSaving(true)
     try {
+      const payload = { ...form, name: form.name.trim(), industry: optionalText(form.industry), website: optionalText(form.website), phone: optionalText(form.phone), notes: optionalText(form.notes) }
       if (modal.editing) {
-        await updateCompany(modal.editing.id, form)
+        await updateCompany(modal.editing.id, payload)
         setToast({ msg: 'Empresa actualizada', type: 'success' })
       } else {
-        await createCompany(form)
+        await createCompany(payload)
         setToast({ msg: 'Empresa creada', type: 'success' })
       }
       closeModal(); load()
@@ -101,8 +103,8 @@ export default function Companies() {
                   <td>{c.website ? <a href={c.website} target="_blank" rel="noreferrer">{c.website}</a> : '—'}</td>
                   <td>{c.phone ?? '—'}</td>
                   <td className="actions-cell">
-                    <button className="btn-icon" onClick={() => openEdit(c)}>✏️</button>
-                    <button className="btn-icon btn-icon--danger" onClick={() => handleDelete(c)}>🗑️</button>
+                    <button className="btn-icon" aria-label="Editar" onClick={() => openEdit(c)}>✏️</button>
+                    <button className="btn-icon btn-icon--danger" aria-label="Eliminar" onClick={() => handleDelete(c)}>🗑️</button>
                   </td>
                 </tr>
               ))}
@@ -116,27 +118,27 @@ export default function Companies() {
           <form onSubmit={handleSubmit} className="modal-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Nombre *</label>
-                <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                <label htmlFor="companies-field-1">Nombre *</label>
+                <input id="companies-field-1" required maxLength={150} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Industria</label>
-                <input value={form.industry} onChange={e => setForm(f => ({ ...f, industry: e.target.value }))} />
+                <label htmlFor="companies-field-2">Industria</label>
+                <input id="companies-field-2" maxLength={80} value={form.industry} onChange={e => setForm(f => ({ ...f, industry: e.target.value }))} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Sitio web</label>
-                <input type="url" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} />
+                <label htmlFor="companies-field-3">Sitio web</label>
+                <input id="companies-field-3" type="url" maxLength={255} value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Teléfono</label>
-                <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                <label htmlFor="companies-field-4">Teléfono</label>
+                <input id="companies-field-4" maxLength={30} value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
               </div>
             </div>
             <div className="form-group">
-              <label>Notas</label>
-              <textarea rows={3} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+              <label htmlFor="companies-field-5">Notas</label>
+              <textarea id="companies-field-5" rows={3} maxLength={2000} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
             </div>
             <div className="modal-footer">
               <button type="button" className="btn-secondary" onClick={closeModal}>Cancelar</button>

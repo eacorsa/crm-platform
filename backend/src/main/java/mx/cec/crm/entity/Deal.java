@@ -36,6 +36,7 @@ public class Deal {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Stage stage = Stage.NUEVO;
 
     @Column(name = "close_date")

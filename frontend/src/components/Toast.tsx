@@ -12,5 +12,5 @@ export default function Toast({ message, type = 'error', onDone }: Props) {
     return () => clearTimeout(t)
   }, [onDone])
 
-  return <div className={`toast ${type}`}>{message}</div>
+  return <div role="status" aria-live="polite" className={`toast ${type}`}>{message}</div>
 }

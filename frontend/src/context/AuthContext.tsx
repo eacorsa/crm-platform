@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { TOKEN_KEY, USER_KEY, SESSION_EXPIRED_EVENT, clearSession, isTokenCurrent, tokenExpiresAt } from '../auth/session'
 import type { AuthResponse } from '../types'
 
 interface AuthState {
@@ -14,16 +15,20 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const TOKEN_KEY = 'crm_token'
-const USER_KEY  = 'crm_user'
-
 function loadInitialState(): AuthState {
   const token = localStorage.getItem(TOKEN_KEY)
   const raw   = localStorage.getItem(USER_KEY)
-  if (!token || !raw) return { token: null, user: null }
+  if (!isTokenCurrent(token) || !raw) {
+    clearSession()
+    return { token: null, user: null }
+  }
   try {
-    return { token, user: JSON.parse(raw) }
+    const user = JSON.parse(raw)
+    if (typeof user?.name !== 'string' || typeof user?.email !== 'string' ||
+        !['ADMIN', 'AGENT'].includes(user?.role)) throw new Error('Invalid stored user')
+    return { token, user }
   } catch {
+    clearSession()
     return { token: null, user: null }
   }
 }
@@ -39,13 +44,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY)
-    localStorage.removeItem(USER_KEY)
+    clearSession()
     setState({ token: null, user: null })
   }, [])
 
+  useEffect(() => {
+    const syncSession = () => setState(loadInitialState())
+    window.addEventListener(SESSION_EXPIRED_EVENT, signOut)
+    window.addEventListener('storage', syncSession)
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, signOut)
+      window.removeEventListener('storage', syncSession)
+    }
+  }, [signOut])
+
+  useEffect(() => {
+    if (!state.token) return
+    let timer: ReturnType<typeof setTimeout>
+    const checkExpiry = () => {
+      const remaining = (tokenExpiresAt(state.token) ?? 0) - Date.now()
+      if (remaining <= 0) signOut()
+      else timer = setTimeout(checkExpiry, Math.min(remaining, 2_147_483_647))
+    }
+    checkExpiry()
+    return () => clearTimeout(timer)
+  }, [state.token, signOut])
+
   return (
-    <AuthContext.Provider value={{ ...state, signIn, signOut, isAuthenticated: !!state.token }}>
+    <AuthContext.Provider value={{ ...state, signIn, signOut, isAuthenticated: isTokenCurrent(state.token) }}>
       {children}
     </AuthContext.Provider>
   )
