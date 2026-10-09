@@ -1,3 +1,5 @@
 @echo off
+setlocal
+cd /d "%~dp0"
 echo Iniciando CRM Frontend...
-npm run dev
+call npm run dev

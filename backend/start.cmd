@@ -1,8 +1,6 @@
 @echo off
-set JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.18.8-hotspot
-set PATH=%JAVA_HOME%\bin;%PATH%
-echo Usando Java:
-java -version
-echo.
+setlocal
+cd /d "%~dp0"
+if not defined SPRING_PROFILES_ACTIVE set SPRING_PROFILES_ACTIVE=local
 echo Iniciando CRM Backend...
-mvn spring-boot:run
+call mvn spring-boot:run

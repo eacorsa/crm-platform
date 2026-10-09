@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Modal from '../components/Modal'
 import Toast from '../components/Toast'
-import { getTasks, createTask, updateTask, deleteTask } from '../api/tasks'
+import { getTasks, createTask, updateTask, deleteTask, updateTaskDone } from '../api/tasks'
+import { optionalDate, optionalText } from '../api/forms'
 import type { Task } from '../types'
 
 const PRIORITIES: Task['priority'][] = ['NORMAL', 'ALTA', 'URGENTE']
@@ -47,11 +48,13 @@ export default function Tasks() {
     e.preventDefault()
     setSaving(true)
     try {
+      const payload = { ...form, title: form.title.trim(), dueDate: optionalDate(form.dueDate),
+        contactName: optionalText(form.contactName), notes: optionalText(form.notes) }
       if (modal.editing) {
-        await updateTask(modal.editing.id, form)
+        await updateTask(modal.editing.id, payload)
         setToast({ msg: 'Tarea actualizada', type: 'success' })
       } else {
-        await createTask(form)
+        await createTask(payload)
         setToast({ msg: 'Tarea creada', type: 'success' })
       }
       closeModal(); load()
@@ -61,7 +64,7 @@ export default function Tasks() {
   }
 
   async function toggleDone(t: Task) {
-    try { await updateTask(t.id, { done: !t.done }); load() }
+    try { await updateTaskDone(t.id, !t.done); load() }
     catch { setToast({ msg: 'Error al actualizar', type: 'error' }) }
   }
 
@@ -96,7 +99,7 @@ export default function Tasks() {
         <div className="task-list">
           {filtered.map(t => (
             <div key={t.id} className={`task-item${t.done ? ' task-item--done' : ''}`}>
-              <input type="checkbox" checked={t.done} onChange={() => toggleDone(t)} className="task-check" />
+              <input type="checkbox" aria-label={`Completar ${t.title}`} checked={t.done} onChange={() => toggleDone(t)} className="task-check" />
               <div className="task-info">
                 <div className="task-title">
                   {TYPE_ICON[t.type]} {t.title}
@@ -108,8 +111,8 @@ export default function Tasks() {
                 </div>
               </div>
               <div className="task-actions">
-                <button className="btn-icon" onClick={() => openEdit(t)}>✏️</button>
-                <button className="btn-icon btn-icon--danger" onClick={() => handleDelete(t)}>🗑️</button>
+                <button className="btn-icon" aria-label="Editar" onClick={() => openEdit(t)}>✏️</button>
+                <button className="btn-icon btn-icon--danger" aria-label="Eliminar" onClick={() => handleDelete(t)}>🗑️</button>
               </div>
             </div>
           ))}
@@ -120,36 +123,36 @@ export default function Tasks() {
         <Modal title={modal.editing ? 'Editar tarea' : 'Nueva tarea'} onClose={closeModal}>
           <form onSubmit={handleSubmit} className="modal-form">
             <div className="form-group">
-              <label>Título *</label>
-              <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+              <label htmlFor="tasks-field-1">Título *</label>
+              <input id="tasks-field-1" required maxLength={255} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Tipo</label>
-                <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as Task['type'] }))}>
+                <label htmlFor="tasks-field-2">Tipo</label>
+                <select id="tasks-field-2" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as Task['type'] }))}>
                   {TYPES.map(t => <option key={t} value={t}>{TYPE_ICON[t]} {t}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label>Prioridad</label>
-                <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value as Task['priority'] }))}>
+                <label htmlFor="tasks-field-3">Prioridad</label>
+                <select id="tasks-field-3" value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value as Task['priority'] }))}>
                   {PRIORITIES.map(p => <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>)}
                 </select>
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Fecha límite</label>
-                <input type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))} />
+                <label htmlFor="tasks-field-4">Fecha límite</label>
+                <input id="tasks-field-4" type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Contacto</label>
-                <input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} />
+                <label htmlFor="tasks-field-5">Contacto</label>
+                <input id="tasks-field-5" maxLength={100} value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} />
               </div>
             </div>
             <div className="form-group">
-              <label>Notas</label>
-              <textarea rows={3} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+              <label htmlFor="tasks-field-6">Notas</label>
+              <textarea id="tasks-field-6" rows={3} maxLength={2000} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
             </div>
             {modal.editing && (
               <div className="form-group form-group--inline">

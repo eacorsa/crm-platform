@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Modal from '../components/Modal'
 import Toast from '../components/Toast'
 import { getContacts, createContact, updateContact, deleteContact } from '../api/contacts'
+import { optionalText } from '../api/forms'
 import type { Contact } from '../types'
 
 const STAGES: Contact['stage'][] = ['LEAD', 'PROSPECTO', 'CALIFICADO', 'CLIENTE', 'PERDIDO']
@@ -9,7 +10,7 @@ const STAGE_LABEL: Record<Contact['stage'], string> = {
   LEAD: 'Lead', PROSPECTO: 'Prospecto', CALIFICADO: 'Calificado', CLIENTE: 'Cliente', PERDIDO: 'Perdido',
 }
 
-const EMPTY = { name: '', email: '', phone: '', company: '', stage: 'LEAD' as Contact['stage'], notes: '' }
+const EMPTY = { name: '', email: '', phone: '', company: '', stage: 'LEAD' as Contact['stage'], source: '', notes: '' }
 
 export default function Contacts() {
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -50,7 +51,7 @@ export default function Contacts() {
   }
 
   function openEdit(c: Contact) {
-    setForm({ name: c.name, email: c.email ?? '', phone: c.phone ?? '', company: c.company ?? '', stage: c.stage, notes: c.notes ?? '' })
+    setForm({ name: c.name, email: c.email ?? '', phone: c.phone ?? '', company: c.company ?? '', stage: c.stage, source: c.source ?? '', notes: c.notes ?? '' })
     setModal({ open: true, editing: c })
   }
 
@@ -60,11 +61,12 @@ export default function Contacts() {
     e.preventDefault()
     setSaving(true)
     try {
+      const payload = { ...form, name: form.name.trim(), email: optionalText(form.email), phone: optionalText(form.phone), company: optionalText(form.company), source: optionalText(form.source), notes: optionalText(form.notes) }
       if (modal.editing) {
-        await updateContact(modal.editing.id, form)
+        await updateContact(modal.editing.id, payload)
         setToast({ msg: 'Contacto actualizado', type: 'success' })
       } else {
-        await createContact(form)
+        await createContact(payload)
         setToast({ msg: 'Contacto creado', type: 'success' })
       }
       closeModal()
@@ -120,8 +122,8 @@ export default function Contacts() {
                   <td>{c.company ?? '—'}</td>
                   <td><span className={`badge stage-${c.stage.toLowerCase()}`}>{STAGE_LABEL[c.stage]}</span></td>
                   <td className="actions-cell">
-                    <button className="btn-icon" onClick={() => openEdit(c)}>✏️</button>
-                    <button className="btn-icon btn-icon--danger" onClick={() => handleDelete(c)}>🗑️</button>
+                    <button className="btn-icon" aria-label="Editar" onClick={() => openEdit(c)}>✏️</button>
+                    <button className="btn-icon btn-icon--danger" aria-label="Eliminar" onClick={() => handleDelete(c)}>🗑️</button>
                   </td>
                 </tr>
               ))}
@@ -135,33 +137,37 @@ export default function Contacts() {
           <form onSubmit={handleSubmit} className="modal-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Nombre *</label>
-                <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                <label htmlFor="contacts-field-1">Nombre *</label>
+                <input id="contacts-field-1" required maxLength={150} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Correo</label>
-                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+                <label htmlFor="contacts-field-2">Correo</label>
+                <input id="contacts-field-2" type="email" maxLength={180} value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Teléfono</label>
-                <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                <label htmlFor="contacts-field-3">Teléfono</label>
+                <input id="contacts-field-3" maxLength={30} value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Empresa</label>
-                <input value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} />
+                <label htmlFor="contacts-field-4">Empresa</label>
+                <input id="contacts-field-4" maxLength={150} value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} />
               </div>
             </div>
             <div className="form-group">
-              <label>Etapa</label>
-              <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Contact['stage'] }))}>
+              <label htmlFor="contacts-field-5">Etapa</label>
+              <select id="contacts-field-5" value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Contact['stage'] }))}>
                 {STAGES.map(s => <option key={s} value={s}>{STAGE_LABEL[s]}</option>)}
               </select>
             </div>
             <div className="form-group">
-              <label>Notas</label>
-              <textarea rows={3} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+              <label htmlFor="contacts-field-6">Origen</label>
+              <input id="contacts-field-6" maxLength={60} value={form.source} onChange={e => setForm(f => ({ ...f, source: e.target.value }))} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="contacts-field-7">Notas</label>
+              <textarea id="contacts-field-7" rows={3} maxLength={2000} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
             </div>
             <div className="modal-footer">
               <button type="button" className="btn-secondary" onClick={closeModal}>Cancelar</button>

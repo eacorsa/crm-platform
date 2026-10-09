@@ -1,66 +1,62 @@
 export interface AuthResponse {
   token: string
-  name:  string
+  name: string
   email: string
-  role:  string
+  role: 'ADMIN' | 'AGENT'
 }
 
-export interface Contact {
-  id:        number
-  name:      string
-  email?:    string
-  phone?:    string
-  company?:  string
-  stage:     ContactStage
-  source?:   string
-  notes?:    string
+interface Resource {
+  id: number
   createdAt: string
   updatedAt: string
 }
 
 export type ContactStage = 'LEAD' | 'PROSPECTO' | 'CALIFICADO' | 'CLIENTE' | 'PERDIDO'
-
-export interface Company {
-  id:        number
-  name:      string
-  industry?: string
-  website?:  string
-  size?:     string
-  email?:    string
-  phone?:    string
-  notes?:    string
-  createdAt: string
+export interface ContactRequest {
+  name: string
+  email?: string | null
+  phone?: string | null
+  company?: string | null
+  stage: ContactStage
+  source?: string | null
+  notes?: string | null
 }
+export interface Contact extends Resource, ContactRequest {}
 
-export interface Deal {
-  id:           number
-  title:        string
-  value?:       number
-  contactName?: string
-  closeDate?:   string
-  stage:        DealStage
-  notes?:       string
-  createdAt:    string
+export interface CompanyRequest {
+  name: string
+  industry?: string | null
+  website?: string | null
+  phone?: string | null
+  notes?: string | null
 }
+export interface Company extends Resource, CompanyRequest {}
 
 export type DealStage = 'NUEVO' | 'CONTACTADO' | 'PROPUESTA' | 'NEGOCIACION' | 'CERRADO' | 'PERDIDO'
-
-export interface Task {
-  id:           number
-  title:        string
-  contactName?: string
-  dueDate?:     string
-  priority:     TaskPriority
-  type:         TaskType
-  notes?:       string
-  done:         boolean
-  createdAt:    string
+export interface DealRequest {
+  title: string
+  value?: number | null
+  contactName?: string | null
+  closeDate?: string | null
+  stage: DealStage
+  notes?: string | null
 }
+export interface Deal extends Resource, DealRequest {}
 
 export type TaskPriority = 'NORMAL' | 'ALTA' | 'URGENTE'
-export type TaskType     = 'LLAMADA' | 'EMAIL' | 'REUNION' | 'SEGUIMIENTO' | 'OTRO'
+export type TaskType = 'LLAMADA' | 'EMAIL' | 'REUNION' | 'SEGUIMIENTO' | 'OTRO'
+export interface TaskRequest {
+  title: string
+  contactName?: string | null
+  dueDate?: string | null
+  priority: TaskPriority
+  type: TaskType
+  notes?: string | null
+  done: boolean
+}
+export interface Task extends Resource, TaskRequest {}
 
 export interface ApiError {
-  error:   string
+  error: string
   fields?: Record<string, string>
 }

@@ -1,27 +1,37 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 
 interface Props {
-  title:    string
-  onClose:  () => void
+  title: string
+  onClose: () => void
   children: ReactNode
 }
 
 export default function Modal({ title, onClose, children }: Props) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const dialog = dialogRef.current
+    dialog?.showModal()
+    dialog?.querySelector<HTMLElement>('input:not([disabled]), select:not([disabled]), textarea:not([disabled])')?.focus()
+    return () => {
+      dialog?.close()
+      previousFocus?.focus()
+    }
+  }, [])
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-modal="true">
+    <dialog ref={dialogRef} className="modal-overlay" aria-labelledby={titleId}
+      onCancel={e => { e.preventDefault(); onClose() }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div className="modal">
         <div className="modal-header">
-          <h2>{title}</h2>
-          <button className="modal-close" onClick={onClose} aria-label="Cerrar">&times;</button>
+          <h2 id={titleId}>{title}</h2>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">&times;</button>
         </div>
         {children}
       </div>
-    </div>
+    </dialog>
   )
 }

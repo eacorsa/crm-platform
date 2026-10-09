@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Modal from '../components/Modal'
 import Toast from '../components/Toast'
-import { getDeals, createDeal, updateDeal, deleteDeal } from '../api/deals'
+import { getDeals, createDeal, updateDeal, deleteDeal, updateDealStage } from '../api/deals'
+import { optionalAmount, optionalDate, optionalText } from '../api/forms'
 import type { Deal } from '../types'
 
 const STAGES: Deal['stage'][] = ['NUEVO', 'CONTACTADO', 'PROPUESTA', 'NEGOCIACION', 'CERRADO', 'PERDIDO']
@@ -43,7 +44,8 @@ export default function Deals() {
     e.preventDefault()
     setSaving(true)
     try {
-      const payload = { ...form, value: form.value ? parseFloat(form.value) : undefined }
+      const payload = { ...form, title: form.title.trim(), value: optionalAmount(form.value),
+        closeDate: optionalDate(form.closeDate), contactName: optionalText(form.contactName), notes: optionalText(form.notes) }
       if (modal.editing) {
         await updateDeal(modal.editing.id, payload)
         setToast({ msg: 'Deal actualizado', type: 'success' })
@@ -64,7 +66,7 @@ export default function Deals() {
   }
 
   async function moveStage(d: Deal, stage: Deal['stage']) {
-    try { await updateDeal(d.id, { stage }); load() }
+    try { await updateDealStage(d.id, stage); load() }
     catch { setToast({ msg: 'Error al mover deal', type: 'error' }) }
   }
 
@@ -102,8 +104,8 @@ export default function Deals() {
                     {d.value != null && <div className="deal-card__value">{formatMXN(d.value)}</div>}
                     {d.closeDate && <div className="deal-card__date">Cierre: {d.closeDate}</div>}
                     <div className="deal-card__actions">
-                      <button className="btn-icon" onClick={() => openEdit(d)}>✏️</button>
-                      <button className="btn-icon btn-icon--danger" onClick={() => handleDelete(d)}>🗑️</button>
+                      <button className="btn-icon" aria-label="Editar" onClick={() => openEdit(d)}>✏️</button>
+                      <button className="btn-icon btn-icon--danger" aria-label="Eliminar" onClick={() => handleDelete(d)}>🗑️</button>
                     </div>
                     <div className="deal-card__move">
                       {STAGES.filter(s => s !== col.stage).map(s => (
@@ -123,33 +125,33 @@ export default function Deals() {
           <form onSubmit={handleSubmit} className="modal-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Título *</label>
-                <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+                <label htmlFor="deals-field-1">Título *</label>
+                <input id="deals-field-1" required maxLength={200} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Valor (MXN)</label>
-                <input type="number" min="0" step="0.01" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
+                <label htmlFor="deals-field-2">Valor (MXN)</label>
+                <input id="deals-field-2" type="number" min="0" step="0.01" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Contacto</label>
-                <input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} />
+                <label htmlFor="deals-field-3">Contacto</label>
+                <input id="deals-field-3" maxLength={100} value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} />
               </div>
               <div className="form-group">
-                <label>Fecha de cierre</label>
-                <input type="date" value={form.closeDate} onChange={e => setForm(f => ({ ...f, closeDate: e.target.value }))} />
+                <label htmlFor="deals-field-4">Fecha de cierre</label>
+                <input id="deals-field-4" type="date" value={form.closeDate} onChange={e => setForm(f => ({ ...f, closeDate: e.target.value }))} />
               </div>
             </div>
             <div className="form-group">
-              <label>Etapa</label>
-              <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Deal['stage'] }))}>
+              <label htmlFor="deals-field-5">Etapa</label>
+              <select id="deals-field-5" value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Deal['stage'] }))}>
                 {STAGES.map(s => <option key={s} value={s}>{STAGE_LABEL[s]}</option>)}
               </select>
             </div>
             <div className="form-group">
-              <label>Notas</label>
-              <textarea rows={3} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+              <label htmlFor="deals-field-6">Notas</label>
+              <textarea id="deals-field-6" rows={3} maxLength={2000} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
             </div>
             <div className="modal-footer">
               <button type="button" className="btn-secondary" onClick={closeModal}>Cancelar</button>

@@ -30,7 +30,6 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <img src="/logo-cec.png" alt="CEC" onError={(e) => (e.currentTarget.style.display = 'none')} />
           <span>CRM CEC</span>
         </div>
         <h1 className="login-title">Bienvenido</h1>

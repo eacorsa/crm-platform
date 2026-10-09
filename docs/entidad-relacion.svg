@@ -287,6 +287,6 @@
   <line x1="340" y1="651" x2="370" y2="651" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,2"/>
   <text x="378" y="656" fill="#e2e8f0" font-size="11">Relación 1:N</text>
 
-  <text x="530" y="656" fill="#64748b" font-size="11">Todas las tablas: ON DELETE CASCADE via user_id</text>
+  <text x="530" y="656" fill="#64748b" font-size="11">Todas las tablas: FK user_id; sin cascada declarada</text>
 
 </svg>

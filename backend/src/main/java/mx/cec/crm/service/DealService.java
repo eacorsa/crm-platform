@@ -40,13 +40,21 @@ public class DealService {
     public Deal update(Long id, DealRequest req, Long userId) {
         Deal d = dealRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Deal", id));
-        if (req.title()       != null) d.setTitle(req.title());
-        if (req.value()       != null) d.setValue(req.value());
-        if (req.contactName() != null) d.setContactName(req.contactName());
-        if (req.closeDate()   != null) d.setCloseDate(req.closeDate());
+        d.setTitle(req.title());
+        d.setValue(req.value());
+        d.setContactName(req.contactName());
+        d.setCloseDate(req.closeDate());
         if (req.stage()       != null) d.setStage(req.stage());
-        if (req.notes()       != null) d.setNotes(req.notes());
+        d.setNotes(req.notes());
         return dealRepository.save(d);
+    }
+
+    @Transactional
+    public Deal updateStage(Long id, Deal.Stage stage, Long userId) {
+        Deal entity = dealRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deal", id));
+        entity.setStage(stage);
+        return dealRepository.save(entity);
     }
 
     @Transactional

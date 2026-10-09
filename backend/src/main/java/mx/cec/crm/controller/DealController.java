@@ -3,6 +3,7 @@ package mx.cec.crm.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.cec.crm.dto.DealRequest;
+import mx.cec.crm.dto.DealStageRequest;
 import mx.cec.crm.entity.Deal;
 import mx.cec.crm.service.DealService;
 import org.springframework.http.*;
@@ -35,6 +36,13 @@ public class DealController {
                        @Valid @RequestBody DealRequest req,
                        @AuthenticationPrincipal UserDetails principal) {
         return dealService.update(id, req, userId(principal));
+    }
+
+    @PatchMapping("/{id}/stage")
+    public Deal updateStage(@PathVariable Long id,
+                         @Valid @RequestBody DealStageRequest req,
+                         @AuthenticationPrincipal UserDetails principal) {
+        return dealService.updateStage(id, req.stage(), userId(principal));
     }
 
     @DeleteMapping("/{id}")

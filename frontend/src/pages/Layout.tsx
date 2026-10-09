@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const NAV = [
@@ -26,13 +26,11 @@ function initials(name: string) {
 
 export default function Layout() {
   const { user, signOut } = useAuth()
-  const location = useLocation()
 
   return (
     <div className="app-layout">
       <aside className="sidebar">
         <div className="sidebar__logo">
-          <img src="/logo-cec.png" alt="CEC" onError={(e) => (e.currentTarget.style.display = 'none')} />
           <span>CEC CRM</span>
         </div>
 
