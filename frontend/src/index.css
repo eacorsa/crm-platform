@@ -523,3 +523,10 @@ dialog.modal-overlay::backdrop { background: rgba(9,9,9,.45); backdrop-filter: b
   .task-meta { flex-wrap: wrap; }
   .app-main { min-width: 0; }
 }
+
+/* Password recovery */
+.auth-links { text-align: center; margin-top: 20px; font-size: 13px; }
+.auth-links a, .login-error a { color: var(--brand); text-decoration: underline; }
+.auth-submit { width: 100%; padding: 12px; margin-top: 8px; }
+.auth-success { background: var(--green-bg); color: var(--green); border: 1px solid var(--green);
+  border-radius: var(--radius); padding: 12px; margin-bottom: 18px; font-size: 13px; }

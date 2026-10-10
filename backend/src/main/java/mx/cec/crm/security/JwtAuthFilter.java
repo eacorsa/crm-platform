@@ -18,18 +18,22 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+    private static final Set<String> PUBLIC_AUTH_PATHS = Set.of(
+            "/auth/login", "/auth/forgot-password", "/auth/reset-password");
+
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "POST".equals(request.getMethod()) && "/auth/login".equals(request.getServletPath());
+        return "POST".equals(request.getMethod()) && PUBLIC_AUTH_PATHS.contains(request.getServletPath());
     }
 
     @Override
@@ -45,6 +49,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Long userId = tokenProvider.getUserIdFromToken(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(userId));
 
+                if (!tokenProvider.matchesCredentials(token, userDetails.getPassword())) {
+                    SecurityContextHolder.clearContext();
+                    filterChain.doFilter(request, response);
+                    return;
+                }
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

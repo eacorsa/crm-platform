@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login } from '../api/auth'
 
@@ -58,6 +58,8 @@ export default function Login() {
             {loading ? 'Iniciando sesión…' : 'Iniciar sesión'}
           </button>
         </form>
+
+        <p className="auth-links"><Link to="/forgot-password">¿Olvidaste tu contraseña?</Link></p>
 
         <p className="login-footer">CRM Clientes © {new Date().getFullYear()}</p>
       </div>

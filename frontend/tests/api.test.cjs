@@ -22,7 +22,7 @@ function harness() {
     const source = fs.readFileSync(full,'utf8').replace('import.meta.env', '{}')
     const code = ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText
     vm.runInNewContext(code,{module,exports:module.exports,require: name => name === 'axios' ? axios : load(path.relative(path.resolve(__dirname,'../src'),path.resolve(path.dirname(full),name))+'.ts'),
-      localStorage,window:{dispatchEvent: event => events.push(event.type)},Event,atob,Date,console},{filename:full})
+      localStorage,window:{dispatchEvent: event => events.push(event.type)},Event,atob,Date,console,URLSearchParams,TextEncoder},{filename:full})
     return module.exports
   }
   return {load,client,storage,calls,events}
@@ -84,4 +84,29 @@ test('empty optional form fields send explicit null, zero amount is preserved', 
   assert.equal(form.optionalAmount(''),null); assert.equal(form.optionalAmount('0'),0)
   assert.equal(form.optionalAmount('12.34'),12.34); assert.equal(form.optionalDate(''),null)
   assert.equal(form.optionalText('  '),null); assert.equal(form.optionalText('  Ana  '),'Ana')
+})
+
+
+test('recovery endpoints omit stale bearer and use POST payloads', async () => {
+  const h=harness(), auth=h.load('api/auth.ts'); h.storage.set('crm_token','old')
+  for(const url of ['/auth/forgot-password','/auth/reset-password'])
+    assert.equal(h.client.request({url,headers:{}}).headers.Authorization,undefined)
+  await auth.forgotPassword(' person@example.com ')
+  await auth.resetPassword('a'.repeat(43),'new-password')
+  assert.equal(h.calls[0].url,'/auth/forgot-password')
+  assert.equal(h.calls[0].data.email,'person@example.com')
+  assert.equal(h.calls[1].url,'/auth/reset-password')
+  assert.equal(h.calls[1].data.token,'a'.repeat(43))
+  assert.equal(h.calls[1].data.password,'new-password')
+})
+
+test('reset validates confirmation, UTF-8 length and fragment token', () => {
+  const h=harness(), form=h.load('auth/passwordReset.ts')
+  assert.equal(form.readResetToken('#token='+'a'.repeat(43)),'a'.repeat(43))
+  for(const value of ['', '#token=short', '#token='+':'.repeat(43)]) assert.equal(form.readResetToken(value),'')
+  assert.equal(form.passwordResetError('new-password','new-password'),null)
+  assert.ok(form.passwordResetError('short','short'))
+  assert.ok(form.passwordResetError('new-password','different'))
+  assert.ok(form.passwordResetError('é'.repeat(37),'é'.repeat(37)))
+  assert.equal(form.passwordResetError('é'.repeat(36),'é'.repeat(36)),null)
 })

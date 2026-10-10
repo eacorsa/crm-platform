@@ -15,11 +15,13 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-const isLogin = (url?: string) => url?.split('?')[0].replace(/\/$/, '').endsWith('/auth/login') ?? false
+const isPublicAuth = (url?: string) =>
+  ['/auth/login', '/auth/forgot-password', '/auth/reset-password'].some(path =>
+    url?.split('?')[0].replace(/\/$/, '').endsWith(path))
 
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY)
-  if (token && !isLogin(config.url)) config.headers.Authorization = `Bearer ${token}`
+  if (token && !isPublicAuth(config.url)) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
@@ -30,7 +32,7 @@ client.interceptors.response.use(
     const status = err.response?.status
     // An older request must not clear a newer session after signing in again.
     const token = localStorage.getItem(TOKEN_KEY)
-    if (status === 401 && !isLogin(err.config?.url) && token &&
+    if (status === 401 && !isPublicAuth(err.config?.url) && token &&
         err.config?.headers?.Authorization === `Bearer ${token}`) {
       clearSession()
       window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT))

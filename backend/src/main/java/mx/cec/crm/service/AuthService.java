@@ -28,7 +28,7 @@ public class AuthService {
         if (!passwordEncoder.matches(request.password(), user.getPassword()))
             throw new BadCredentialsException("Credenciales incorrectas.");
         rateLimiter.reset(key);
-        String token = tokenProvider.generateToken(user.getId(), user.getEmail());
+        String token = tokenProvider.generateToken(user.getId(), user.getEmail(), user.getPassword());
         return new AuthResponse(token, user.getName(), user.getEmail(), user.getRole().name());
     }
 }
