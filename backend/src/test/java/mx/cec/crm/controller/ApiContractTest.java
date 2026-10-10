@@ -124,6 +124,7 @@ class ApiContractTest {
         when(tokens.validateToken("valid")).thenReturn(true);
         when(tokens.getUserIdFromToken("valid")).thenReturn(7L);
         when(users.loadUserByUsername("7")).thenReturn(User.withUsername("7").password("unused").roles("AGENT").build());
+        when(tokens.matchesCredentials("valid", "unused")).thenReturn(true);
         when(tasks.findAll(7L)).thenReturn(List.of());
         mvc.perform(get("/tasks").header("Authorization", "Bearer valid"))
                 .andExpect(status().isOk()).andExpect(content().json("[]"));
