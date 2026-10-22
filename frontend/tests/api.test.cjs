@@ -110,3 +110,24 @@ test('reset validates confirmation, UTF-8 length and fragment token', () => {
   assert.ok(form.passwordResetError('é'.repeat(37),'é'.repeat(37)))
   assert.equal(form.passwordResetError('é'.repeat(36),'é'.repeat(36)),null)
 })
+
+
+test('metrics request passes the selected period and cancellation signal', async () => {
+  const h=harness(), signal={aborted:false}
+  await h.load('api/metrics.ts').getMetrics(12,signal)
+  assert.equal(h.calls[0].method,'get'); assert.equal(h.calls[0].url,'/metrics')
+  assert.equal(h.calls[0].data.params.months,12); assert.equal(h.calls[0].data.signal,signal)
+})
+
+test('chart helpers handle empty series, integer ticks and exact month labels', () => {
+  const chart=harness().load('metrics/charts.ts')
+  assert.equal(chart.percentage(0,0),0)
+  assert.equal(chart.percentage(1,4),25)
+  assert.equal(chart.percentage(5,4),100)
+  assert.equal(chart.countAxis([]),4); assert.equal(chart.countAxis([1,2,3]),4)
+  assert.equal(chart.countAxis([9]),12)
+  assert.equal(chart.pointX(0,6),52); assert.equal(chart.pointX(5,6),624)
+  assert.equal(chart.pointX(0,1),340)
+  assert.match(chart.monthLabel('2026-01'),/ene/)
+  assert.match(chart.formatMoney(0.3),/0[.,]30/)
+})
