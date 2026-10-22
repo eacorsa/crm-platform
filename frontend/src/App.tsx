@@ -8,6 +8,7 @@ import Contacts  from './pages/Contacts'
 import Companies from './pages/Companies'
 import Deals     from './pages/Deals'
 import Tasks     from './pages/Tasks'
+import Metrics from './pages/Metrics'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -21,7 +22,8 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
-        <Route index               element={<Navigate to="/contacts" replace />} />
+        <Route index               element={<Navigate to="/metrics" replace />} />
+        <Route path="metrics" element={<Metrics />} />
         <Route path="contacts"     element={<Contacts />} />
         <Route path="companies"    element={<Companies />} />
         <Route path="deals"        element={<Deals />} />

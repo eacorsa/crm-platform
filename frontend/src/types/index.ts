@@ -60,3 +60,19 @@ export interface ApiError {
   error: string
   fields?: Record<string, string>
 }
+
+export interface MetricsResponse {
+  asOf: string
+  summary: {
+    contacts: number
+    companies: number
+    deals: number
+    openValue: number
+    closedValue: number
+    pendingTasks: number
+    completedTasks: number
+  }
+  dealStages: { stage: DealStage; count: number; value: number }[]
+  taskStatuses: { done: boolean; count: number }[]
+  growth: { month: string; contacts: number; companies: number }[]
+}

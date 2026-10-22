@@ -3,6 +3,10 @@ import { useAuth } from '../context/AuthContext'
 
 const NAV = [
   {
+    to: '/metrics', label: 'Métricas',
+    icon: <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 3h2v12h12v2H3V3zm4 7h2v3H7v-3zm4-4h2v7h-2V6zm4-3h2v10h-2V3z" /></svg>,
+  },
+  {
     to: '/contacts', label: 'Contactos',
     icon: <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>,
   },

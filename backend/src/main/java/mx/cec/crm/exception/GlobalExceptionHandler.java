@@ -40,6 +40,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
     }
 
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidParameter() {
+        return ResponseEntity.badRequest().body(Map.of("error", "Parámetros de consulta inválidos."));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, String>> handleUnreadable() {
         return ResponseEntity.badRequest().body(Map.of("error", "JSON, fecha o estado inválido."));
